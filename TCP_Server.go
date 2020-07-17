@@ -107,7 +107,8 @@ func main() {
 	}
 }
 
-//Look for Given Input in the Data
+//"Look for Given Input in the Data"
+
 func Find(param string) []Data {
 	var res []Data
 
@@ -127,7 +128,7 @@ func handleConnection(conn net.Conn) {
 		}
 	}()
 
-	if _, err := conn.Write([]byte("Connected to Server...!\nUsage: Type Region or Date\n[Punjab,Balochistan,ICT,KP,2020-04-04 etc.]\n")); err != nil {
+	if _, err := conn.Write([]byte("Connected to Server...!\nUsage: Please Type REGION or DATE[yyyy-mm-dd]\n[Punjab,Balochistan,ICT,KP,2020-04-04 etc.]\n")); err != nil {
 		log.Println("error writing:", err)
 		return
 	}
@@ -151,13 +152,16 @@ func handleConnection(conn net.Conn) {
 			continue
 		}
 		// send info line by line to the client with fmt.Sprintf()
-		for _, cur := range result {
+		for _, data := range result {
+			//JS, _ := json.Marshal(data)
 			_, err := conn.Write([]byte(
 				fmt.Sprintf(
-					"Positive: %s, Performed: %s, Date: %s, Discharged: %s, Expired: %s, Admitted: %s, Region: %s,\n",
-					cur.TestPos, cur.TestPer, cur.Date, cur.Discharged, cur.Expired, cur.Admitted, cur.Region,
+					"{\n Positive: %s,\n Performed: %s,\n Date: %s,\n Discharged: %s,\n Expired: %s,\n Admitted: %s,\n Region: %s,\n },\n\n",
+					data.TestPos, data.TestPer, data.Date, data.Discharged, data.Expired, data.Admitted, data.Region,
 				),
+				// fmt.Sprintf(string(JS)),
 			))
+
 			if err != nil {
 				log.Println("failed to write response:", err)
 				return
